@@ -2,6 +2,10 @@ import { db } from '@/lib/firebaseClient';
 import { collection, getDocs, limit } from 'firebase/firestore';
 import ListingDetailClient from './listing-client';
 
+interface ListingDetailPageProps {
+  params: Promise<{ id: string }>;
+}
+
 // This function is required for static site generation with dynamic routes
 export async function generateStaticParams() {
   try {
@@ -22,6 +26,8 @@ export async function generateStaticParams() {
   }
 }
 
-export default async function ListingDetailPage({ params }: { params: { id: string } }) {
-  return <ListingDetailClient id={params.id} />;
+export default async function ListingDetailPage({ params }: ListingDetailPageProps) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
+  return <ListingDetailClient id={id} />;
 }
