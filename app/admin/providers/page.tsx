@@ -260,7 +260,7 @@ export default function AdminProvidersPage() {
                       <TableRow key={provider.id}>
                         <TableCell className="font-medium">{provider.business_name}</TableCell>
                         <TableCell>
-                          {provider.business_type?.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                          {provider.business_type?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
                         </TableCell>
                         <TableCell>{provider.business_email}</TableCell>
                         <TableCell>

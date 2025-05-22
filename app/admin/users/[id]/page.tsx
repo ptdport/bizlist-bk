@@ -2,6 +2,10 @@ import { db } from '@/lib/firebaseClient';
 import { collection, getDocs, query, limit } from 'firebase/firestore';
 import UserDetailClient from './user-client';
 
+interface UserDetailPageProps {
+  params: Promise<{ id: string }>;
+}
+
 // This function is required for static site generation with dynamic routes
 export async function generateStaticParams() {
   try {
@@ -23,6 +27,8 @@ export async function generateStaticParams() {
   }
 }
 
-export default function UserDetailPage({ params }: { params: { id: string } }) {
-  return <UserDetailClient id={params.id} />;
+export default async function UserDetailPage({ params }: UserDetailPageProps) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
+  return <UserDetailClient id={id} />;
 }

@@ -8,12 +8,28 @@ import { useUser } from '@/components/auth/UserProvider';
 import { useToast } from '@/components/ui/toast-provider';
 import Link from 'next/link';
 
+interface Listing {
+  id: string;
+  title?: string;
+  status?: string;
+  featured?: boolean;
+  admin_notes?: string;
+  owner_id?: string;
+  images?: string[];
+  price?: string;
+  category?: string;
+  location?: string;
+  created_at?: any; // Firestore Timestamps or ISO strings
+  description?: string;
+  [key: string]: any; // For other potential properties from listingDoc.data()
+}
+
 export default function ListingDetailClient({ id }: { id: string }) {
   const router = useRouter();
   const { user, userRole, loading } = useUser();
   const { showToast } = useToast();
-  const [listingData, setListingData] = useState<any>(null);
-  const [ownerData, setOwnerData] = useState<any>(null);
+  const [listingData, setListingData] = useState<Listing | null>(null);
+  const [ownerData, setOwnerData] = useState<any>(null); // Assuming ownerData might have a different structure or is less critical for this fix
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -52,20 +68,20 @@ export default function ListingDetailClient({ id }: { id: string }) {
         return;
       }
 
-      const listingData = {
+      const listingFromDb = {
         id: listingDoc.id,
         ...listingDoc.data()
-      };
-      setListingData(listingData);
+      } as Listing;
+      setListingData(listingFromDb);
       setFormData({
-        status: listingData.status || 'active',
-        featured: listingData.featured || false,
-        admin_notes: listingData.admin_notes || '',
+        status: listingFromDb.status || 'active',
+        featured: listingFromDb.featured || false,
+        admin_notes: listingFromDb.admin_notes || '',
       });
 
       // Get owner data if available
-      if (listingData.owner_id) {
-        const ownerDoc = await getDoc(doc(db, 'profiles', listingData.owner_id));
+      if (listingFromDb.owner_id) {
+        const ownerDoc = await getDoc(doc(db, 'profiles', listingFromDb.owner_id));
         if (ownerDoc.exists()) {
           setOwnerData({
             id: ownerDoc.id,

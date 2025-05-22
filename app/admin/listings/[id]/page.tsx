@@ -1,5 +1,5 @@
 import { db } from '@/lib/firebaseClient';
-import { collection, getDocs, limit } from 'firebase/firestore';
+import { collection, getDocs, limit, query } from 'firebase/firestore';
 import ListingDetailClient from './listing-client';
 
 interface ListingDetailPageProps {
@@ -10,12 +10,13 @@ interface ListingDetailPageProps {
 export async function generateStaticParams() {
   try {
     // Get a limited number of listing IDs to pre-render
-    const listingsSnapshot = await getDocs(collection(db, 'listings').withConverter(
-      {
-        fromFirestore: (snapshot) => ({ id: snapshot.id }),
-        toFirestore: () => ({})
-      }
-    ).limit(10));
+    const listingsCollectionRef = collection(db, 'listings');
+    const limitedQuery = query(listingsCollectionRef, limit(10));
+    const convertedQuery = limitedQuery.withConverter({
+      fromFirestore: (snapshot) => ({ id: snapshot.id }),
+      toFirestore: () => ({})
+    });
+    const listingsSnapshot = await getDocs(convertedQuery);
     
     return listingsSnapshot.docs.map(doc => ({
       id: doc.id

@@ -1046,7 +1046,7 @@ export default function AdminDashboard() {
                         <tr key={provider.id} className="hover:bg-gray-50">
                           <td className="px-6 py-4 whitespace-nowrap font-medium">{provider.business_name}</td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {provider.business_type?.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                            {provider.business_type?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">{provider.business_email}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

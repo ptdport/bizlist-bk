@@ -2,6 +2,10 @@ import { db } from '@/lib/firebaseClient';
 import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import ProviderProfileClient from './provider-client';
 
+interface ProviderDetailPageProps {
+  params: Promise<{ id: string }>;
+}
+
 // This function is required for static site generation with dynamic routes
 export async function generateStaticParams() {
   try {
@@ -19,9 +23,10 @@ export async function generateStaticParams() {
   }
 }
 
-export default async function ProviderProfilePage({ params }: { params: { id: string } }) {
+export default async function ProviderProfilePage({ params }: ProviderDetailPageProps) {
   // In Next.js App Router, we need to properly await params before accessing its properties
-  const { id } = await params;
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
   
   // Now we can safely use the id
   return <ProviderProfileClient id={id} />;
